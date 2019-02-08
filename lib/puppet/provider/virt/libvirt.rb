@@ -241,11 +241,11 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
     case model
     when nil
-      cpumodel = [""]
+      cpumodel = []
     when :true
       cpumodel = ["--cpu=host"]
     else
-      cpumodel = [""]
+      cpumodel = []
     end
     return cpumodel
   end
