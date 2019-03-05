@@ -243,7 +243,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
     when nil
       cpumodel = []
     when :true
-      cpumodel = ["--cpu=host"]
+      cpumodel = ["--cpu=Westmere,-invtsc"]
     else
       cpumodel = []
     end
