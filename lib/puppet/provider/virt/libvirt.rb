@@ -98,7 +98,12 @@ Puppet::Type.type(:virt).provide(:libvirt) do
       arguments << [ "-x", resource[:boot_options] ]
     end
 
-    max_cpus = Facter.value('processorcount')
+    if resource[:virt_type] == :qemu
+            max_cpus = 16 # It is hardcoded to avoid the maxvcpus with qemu virtualization type
+    else
+	    max_cpus = Facter.value('processorcount')
+    end
+
     arguments << ["--vcpus=#{resource[:cpus]},maxvcpus=#{max_cpus}"]
 
     arguments << diskargs
