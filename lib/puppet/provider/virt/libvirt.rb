@@ -23,6 +23,8 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
   def hypervisor
     #FIXME add support to autentication
+     current_time = Time.now
+    timestamp_to_file(current_time, '/tmp/timestamp','hypervisor_connect')
     case resource[:virt_type]
       when :xen_fullyvirt, :xen_paravirt then "xen:///"
       else "qemu:///session"
@@ -78,7 +80,8 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
   def generalargs(bootoninstall)
     debug "Building general arguments"
-
+    current_time = Time.now
+    timestamp_to_file(current_time, '/tmp/timestamp','buildarg')
     virt_parameter = case resource[:virt_type]
       when :xen_fullyvirt then "--hvm" #must validate kernel support
       when :xen_paravirt then "--paravirt" #Must validate kernel support
@@ -153,6 +156,8 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
   # Creates network arguments for virt-install command
   def network
+    current_time = Time.now
+    timestamp_to_file(current_time, '/tmp/timestamp','network')
     debug "Network paramenters"
     network = []
 
@@ -239,6 +244,8 @@ Puppet::Type.type(:virt).provide(:libvirt) do
   end
 
   def cpumodel
+    current_time = Time.now
+    timestamp_to_file(current_time, '/tmp/timestamp','cpumodel')
     debug "CPU models"
     cpumodel = []
 
@@ -437,5 +444,11 @@ Puppet::Type.type(:virt).provide(:libvirt) do
   def on_crash=(value)
     # Not implemented by libvirt yet
   end
-
+def timestamp_to_file(current_time, my_file,type)
+  File.open(my_file, 'a') do |file|
+     p type + current_time.to_s
+     file.puts type
+     file.puts "#{current_time}"
+  end
+end
 end
