@@ -23,8 +23,6 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
   def hypervisor
     #FIXME add support to autentication
-     current_time = Time.now
-    timestamp_to_file(current_time, '/tmp/timestamp','hypervisor_connect')
     case resource[:virt_type]
       when :xen_fullyvirt, :xen_paravirt then "xen:///"
       else "qemu:///session"
@@ -81,7 +79,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
   def generalargs(bootoninstall)
     debug "Building general arguments"
     current_time = Time.now
-    timestamp_to_file(current_time, '/tmp/timestamp','buildarg')
+    timestamp_to_file(current_time, '/tmp/timestamp','building General Arguments',resource[:name])
     virt_parameter = case resource[:virt_type]
       when :xen_fullyvirt then "--hvm" #must validate kernel support
       when :xen_paravirt then "--paravirt" #Must validate kernel support
@@ -149,7 +147,8 @@ Puppet::Type.type(:virt).provide(:libvirt) do
   # Additional boot arguments
   def bootargs
     debug "Bootargs"
-
+    current_time = Time.now
+    timestamp_to_file(current_time, '/tmp/timestamp','KickStart Booting', resource[:name])
     # kickstart support
     resource[:kickstart] ? ["-x", resource[:kickstart]] : []
   end
@@ -157,7 +156,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
   # Creates network arguments for virt-install command
   def network
     current_time = Time.now
-    timestamp_to_file(current_time, '/tmp/timestamp','network')
+    timestamp_to_file(current_time, '/tmp/timestamp','network', resource[:name])
     debug "Network paramenters"
     network = []
 
@@ -245,7 +244,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
   def cpumodel
     current_time = Time.now
-    timestamp_to_file(current_time, '/tmp/timestamp','cpumodel')
+    timestamp_to_file(current_time, '/tmp/timestamp','Select CPU Model',resource[:name])
     debug "CPU models"
     cpumodel = []
 
@@ -444,10 +443,11 @@ Puppet::Type.type(:virt).provide(:libvirt) do
   def on_crash=(value)
     # Not implemented by libvirt yet
   end
-def timestamp_to_file(current_time, my_file,type)
+def timestamp_to_file(current_time, my_file,msg,name)
   File.open(my_file, 'a') do |file|
-     p type + current_time.to_s
-     file.puts type
+     p msg + current_time.to_s
+     file.puts msg
+     file.puts name
      file.puts "#{current_time}"
   end
 end
