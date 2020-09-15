@@ -139,9 +139,20 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
   def adddiskargs
     params = resource[:disk_path] if resource[:disk_path]
+    #params = params[0]
     parameters = []
-    params.each { |disk| parameters << ["--disk", disk+",bus=virtio"] }
-    return parameters
+
+    if resource[:disk_path].empty?
+        return parameters
+    end
+
+    if params.match(/qcow2/)
+        params.each_line { |disk| parameters << ["--disk", disk+",bus=virtio"] }
+        return parameters
+    elsif params.match(/iso/)
+        params.each_line { |disk| parameters << ["--disk", disk+",format=iso,device=cdrom"] }
+        return parameters
+    end
   end
 
   # Additional boot arguments
