@@ -139,7 +139,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
   def adddiskargs
     params = resource[:disk_path] if resource[:disk_path]
-    #params = params[0]
+    params = params[0]
     parameters = []
 
     if resource[:disk_path].empty?
