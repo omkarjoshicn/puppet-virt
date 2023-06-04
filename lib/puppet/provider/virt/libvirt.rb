@@ -134,7 +134,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
     parameters = ""
     parameters = resource[:virt_path] if resource[:virt_path]
     parameters.concat(",format=qcow2," + resource[:disk_size]) if resource[:disk_size]
-    if resource[:disk_path].match(/Firepower/)
+    if resource[:name].match(/ciscoftdv/)
         parameters.concat(",device=disk,bus=virtio,cache=none")
     end
     parameters.empty? ? [] : ["--disk", parameters]
@@ -194,7 +194,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
     else
       iface.each { |iface| network << ["--network","bridge="+iface+",model="+nettype] if interface?(iface) }
     end
-    if resource[:disk_path].match(/Firepower/)
+    if resource[:name].match(/ciscoftdv/)
       network << ["--network", "bridge=virbr0,model=virtio"]
     end
 
@@ -275,7 +275,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
     else
       cpumodel = []
     end
-    if resource[:disk_path].match(/Firepower/)
+    if resource[:name].match(/ciscoftdv/)
         cpumodel = ["--cpu=host"]
     end
     return cpumodel
