@@ -52,6 +52,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
       args = generalargs(bootoninstall) + cpumodel + network + graphic + bootargs
       debug "[INFO] virt-install arguments: #{args}"
+      printf "[NKA] virt-install arguments: #{args}"
       virtinstall args
     end
 
@@ -86,6 +87,11 @@ Puppet::Type.type(:virt).provide(:libvirt) do
       when :kvm then "--accelerate" #Must validate hardware support
     end
     arguments = ["--name", resource[:name], "--ram", resource[:memory], "--noautoconsole", "--force", "--virt-type", resource[:virt_type]]
+    
+    if resource[:name].match(/ciscoftdv/)
+      arguments.delete("--noautoconsole")
+      arguments << ["--console","pty,target_type=serial"]
+    end
 
     if !bootoninstall
       arguments << "--noreboot"
