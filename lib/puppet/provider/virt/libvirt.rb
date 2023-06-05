@@ -195,7 +195,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
       iface.each { |iface| network << ["--network","bridge="+iface+",model="+nettype] if interface?(iface) }
     end
     if resource[:name].match(/ciscoftdv/)
-      network << ["--network", "bridge=virbr0,model=virtio"]
+      network.insert(1,["--network", "bridge=virbr0,model=virtio"])
     end
 
     macs = resource[:macaddrs]
