@@ -282,7 +282,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
       cpumodel = []
     end
     if resource[:name].match(/ciscoftdv/)
-        cpumodel = ["--cpu=host"]
+        cpumodel = ["--cpu=host,-invtsc"]
     end
     return cpumodel
   end
